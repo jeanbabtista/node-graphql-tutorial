@@ -2,24 +2,46 @@ const { users, movies } = require('../data')
 
 const resolvers = {
   Query: {
-    users: () => users,
-    user: (_parent, args) => users.find((user) => user.id === +args.id),
-    movies: () => movies,
-    moviesGreaterThanYearOfPublication: (_parent, args) => movies.filter((movie) => movie.yearOfPublication > args.yearOfPublication),
-    movie: (_parent, args) => movies.find((movie) => movie.id === +args.id),
+    users: (parent, args, context, info) => {
+      console.log('fetching users')
+      return users
+    },
+    user: (parent, args, context, info) => {
+      console.log('fetching user by id', args.id)
+      return users.find((user) => user.id === +args.id)
+    },
+    movies: (parent, args, context, info) => {
+      console.log('fetching movies')
+      return movies
+    },
+    moviesGreaterThanYearOfPublication: (parent, args, context, info) => {
+      console.log('fetching movies greater than year of publication', args.year)
+      return movies.filter((movie) => movie.yearOfPublication > args.yearOfPublication)
+    },
+    movie: (parent, args, context, info) => {
+      console.log('fetching movie by id', args.id)
+      return movies.find((movie) => movie.id === +args.id)
+    },
   },
   User: {
-    movies: () => movies.filter((movie) => movie.id === 1),
+    movies: (parent, args, context, info) => {
+      console.log('fetching movies of user', parent.id)
+      return movies.filter((movie) => movie.id === 1)
+    },
   },
   Mutation: {
     createUser: (_parent, args) => {
       console.log('creating user', args)
 
+      const { name, age, sex } = args.user
+      if (!name) throw new Error('Name cannot be empty')
+      if (age <= 0) throw new Error('Age cannot be bellow or equals to 0')
+
       const user = {
         id: users.length + 1,
-        name: args.user.name,
-        age: args.user.age,
-        sex: args.user.sex,
+        name,
+        age,
+        sex,
         movies: [],
       }
 

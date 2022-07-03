@@ -5,6 +5,10 @@ const resolvers = require('./schema/resolvers')
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  context: ({ req }) => {
+    const token = req.headers.authorization || ''
+    return { token }
+  },
 })
 
 server.listen().then(({ url }) => {
