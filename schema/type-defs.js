@@ -24,6 +24,8 @@ const typeDefs = gql`
 
   type Mutation {
     createUser(user: CreateUserInput!): User!
+    updateUserNameById(id: ID!, name: String!): User
+    deleteUserById(id: ID!): User
   }
 
   type Query {
